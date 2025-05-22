@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>License Plate Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="bg-overlay"></div>
+  <div class="container">
+    <h1>🔍 License Plate Detection System</h1>
+    <p class="description">
+      Upload an image or video to detect vehicles and license plates using a YOLO-based AI model.<br>
+      Supported classes: <b>cars</b>, <b>buses</b>, <b>trucks</b>, <b>motorcycles</b>, and <b>plates</b>.
+    </p>
+
+    <form method="POST" action="/" enctype="multipart/form-data">
+      <label for="file" class="file-label">📁 Choose a file</label>
+      <input type="file" name="file" id="file" accept="image/,video/" required>
+      <button type="submit" class="animated-button">🚀 Detect</button>
+    </form>
+
+    {% if filename %}
+    <div class="result-section">
+      <h2>🎯 Detection Result:</h2>
+      {% if is_image %}
+        <img src="{{ url_for('static', filename='results/' + filename) }}" alt="Detected Image">
+      {% else %}
+        <video controls>
+          <source src="{{ url_for('static', filename='results/' + filename) }}" type="video/mp4">
+        </video>
+      {% endif %}
+      <a href="{{ url_for('static', filename='results/' + filename) }}" class="download" download>⬇ Download</a>
+
+      {% if class_counts %}
+      <div class="detection-summary">
+        <h3>📦 Detected Object Summary:</h3>
+        <ul>
+          {% for label, count in class_counts.items() %}
+            <p><strong>{{ label }}:</strong> {{ count }}</p>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
